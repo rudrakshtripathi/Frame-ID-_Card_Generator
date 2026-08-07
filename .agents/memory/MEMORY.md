@@ -1,1 +1,2 @@
 - [HH Goa share persistence](hh-goa-share-persistence.md) — the current share flow needs durable object storage before production use across API restarts.
+- [HH Goa X sharing](hh-goa-x-sharing.md) — open the X tab synchronously from the tap, then navigate it after share creation to avoid mobile popup blocking.

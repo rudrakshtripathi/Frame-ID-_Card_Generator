@@ -266,7 +266,12 @@ function Home() {
   const handleShare = useCallback(() => {
     if (!frameData || createShare.isPending) return;
     setShareError('');
-    const popup = window.open('', '_blank', 'noopener,noreferrer');
+    // Open synchronously from the tap so mobile browsers do not block the
+    // eventual X navigation after the share upload finishes.
+    const popup = window.open('about:blank', '_blank');
+    if (popup) {
+      popup.document.title = 'Preparing your HH Goa share…';
+    }
     createShare.mutate({ data: { imageData: frameData } }, {
       onSuccess: (share) => {
         try {
@@ -276,9 +281,14 @@ function Home() {
         }
         const shareUrl = absolutePath(share.sharePath);
         const caption = `Built in Goa. Wearing the Hackers House frame for 2026. #FrameInGoa`;
-        const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
-        if (popup) popup.location.href = intent;
-        else window.open(intent, '_blank', 'noopener,noreferrer');
+        const intent = `https://x.com/intent/post?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
+        if (popup && !popup.closed) {
+          popup.location.assign(intent);
+        } else {
+          // A popup blocker may reject the new tab. Navigating this tab still
+          // completes the share instead of failing silently.
+          window.location.assign(intent);
+        }
       },
       onError: () => {
         popup?.close();
