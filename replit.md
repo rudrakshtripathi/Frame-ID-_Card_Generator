@@ -1,6 +1,6 @@
-# [Project name]
+# HH Goa 2026 Frame Generator
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A no-login, mobile-first tool that turns a user's photo into a branded Hackers House Goa 2026 profile frame that can be downloaded or shared to X.
 
 ## Run & Operate
 
@@ -22,15 +22,24 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/hh-goa-frame` — the React/Vite frontend and browser canvas compositor
+- `artifacts/api-server/src/routes/shares.ts` — share creation, image serving, and crawler-facing `/s/:id` HTML
+- `lib/api-spec/openapi.yaml` — source of truth for health and share API contracts
+- `attached_assets/` — supplied HH Goa branding and product documents
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Photo compositing stays in the browser so upload-to-result is fast and the original photo is never persisted.
+- MVP is intentionally Format A only: the PFP frame flow is the submission-critical experience.
+- Share pages are served by the API at `/s/:id` with explicit Open Graph metadata because X crawlers do not execute the client app.
+- The frame is generated as a 1000×1000 flattened PNG with center-crop fitting into a circular slot.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Upload JPG, JPEG, PNG, or HEIC photos up to 25 MB.
+- Auto-fit the photo into an HH Goa 2026 event frame in the browser.
+- Download the generated PNG or share it to X with `#FrameInGoa`.
+- Visit a shared frame page with a “Make your frame” return path.
 
 ## User preferences
 
@@ -38,7 +47,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- HEIC decode support varies by browser; unsupported HEIC files show a clear inline fallback message.
+- Share records are currently held in API process memory, so the share endpoint should move to persistent object storage before relying on shares across server restarts.
 
 ## Pointers
 

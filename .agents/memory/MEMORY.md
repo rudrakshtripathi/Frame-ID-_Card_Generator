@@ -1,0 +1,1 @@
+- [HH Goa share persistence](hh-goa-share-persistence.md) — the current share flow needs durable object storage before production use across API restarts.

@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: shares
+    description: Shareable generated frame images
 paths:
   /healthz:
     get:
@@ -24,6 +26,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /shares:
+    post:
+      operationId: createShare
+      tags: [shares]
+      summary: Create a shareable generated frame
+      description: Stores a flattened PNG data URL and returns a public share page path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShareInput"
+      responses:
+        "201":
+          description: Share created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Share"
+        "400":
+          description: Invalid image payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +60,34 @@ components:
           type: string
       required:
         - status
+    ShareInput:
+      type: object
+      properties:
+        imageData:
+          type: string
+          description: A PNG data URL containing the flattened generated frame.
+          minLength: 32
+          maxLength: 14000000
+      required:
+        - imageData
+    Share:
+      type: object
+      properties:
+        id:
+          type: string
+        sharePath:
+          type: string
+        imagePath:
+          type: string
+      required:
+        - id
+        - sharePath
+        - imagePath
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
 
