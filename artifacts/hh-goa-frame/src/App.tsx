@@ -282,7 +282,7 @@ function makeBuildBoldFrame(source: HTMLImageElement): string {
   ctx.fillStyle = yellow;
   ctx.fillRect(0, 0, 1000, 112);
   ctx.fillStyle = darkGreen;
-  ctx.fillRect(0, 888, 1000, 112);
+  ctx.fillRect(0, 814, 1000, 186);
 
   // A bold rectangular crop for a more poster-like profile mark.
   ctx.fillStyle = green;
@@ -298,11 +298,11 @@ function makeBuildBoldFrame(source: HTMLImageElement): string {
   ctx.font = '800 26px "Space Mono", monospace';
   ctx.fillText('HACKERS HOUSE GOA 2026', 500, 70);
   ctx.fillStyle = yellow;
-  ctx.font = '800 94px "Fraunces", Georgia, serif';
-  ctx.fillText('BUILD', 54, 875);
+  ctx.font = '800 108px "Fraunces", Georgia, serif';
+  ctx.fillText('BUILD', 500, 908);
   ctx.fillStyle = cream;
   ctx.font = '700 16px "Space Mono", monospace';
-  ctx.fillText('BUILD IN PUBLIC  /  FRAME 03', 57, 947);
+  ctx.fillText('BUILD IN PUBLIC  /  FRAME 03', 500, 968);
 
   ctx.strokeStyle = green;
   ctx.lineWidth = 10;
