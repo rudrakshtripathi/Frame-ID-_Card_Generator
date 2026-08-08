@@ -125,11 +125,13 @@ function makeSignalFrame(source: HTMLImageElement): string {
   ctx.stroke();
 
   // Event typography and footer ribbon.
-  ctx.fillStyle = cream;
+  // High-contrast event banner so the full event name reads instantly.
+  ctx.fillStyle = yellow;
+  ctx.fillRect(38, 20, 924, 62);
+  ctx.fillStyle = darkGreen;
   ctx.textAlign = 'center';
-  ctx.font = '700 19px "Space Mono", monospace';
-  ctx.letterSpacing = '5px';
-  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 57);
+  ctx.font = '800 24px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 59);
   ctx.fillStyle = yellow;
   ctx.font = '800 93px "Fraunces", Georgia, serif';
   ctx.fillText('GOA', 500, 938);
@@ -139,7 +141,7 @@ function makeSignalFrame(source: HTMLImageElement): string {
   ctx.textAlign = 'left';
   ctx.fillStyle = pink;
   ctx.font = '700 17px "Space Mono", monospace';
-  ctx.fillText('FRAME IN GOA', 70, 92);
+  ctx.fillText('FRAME IN GOA', 70, 108);
   ctx.save();
   ctx.translate(934, 600);
   ctx.rotate(Math.PI / 2);
@@ -237,10 +239,13 @@ function makePalmClubFrame(source: HTMLImageElement): string {
   ctx.stroke();
   ctx.setLineDash([]);
 
+  // High-contrast event banner keeps the full event name prominent.
   ctx.fillStyle = yellow;
+  ctx.fillRect(38, 38, 924, 62);
+  ctx.fillStyle = darkGreen;
   ctx.textAlign = 'center';
-  ctx.font = '800 20px "Space Mono", monospace';
-  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 96);
+  ctx.font = '800 26px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 77);
   ctx.fillStyle = darkGreen;
   ctx.font = '800 88px "Fraunces", Georgia, serif';
   ctx.fillText('PALM CLUB', 500, 925);
@@ -287,19 +292,17 @@ function makeBuildBoldFrame(source: HTMLImageElement): string {
   ctx.lineWidth = 14;
   ctx.strokeRect(112, 152, 776, 650);
 
+  // High-contrast event banner makes the event identity the first read.
   ctx.fillStyle = darkGreen;
-  ctx.textAlign = 'left';
-  ctx.font = '800 29px "Space Mono", monospace';
-  ctx.fillText('MAKE THINGS', 52, 72);
-  ctx.fillStyle = pink;
-  ctx.font = '800 28px "Space Mono", monospace';
-  ctx.fillText('GOA / 03', 790, 72);
+  ctx.textAlign = 'center';
+  ctx.font = '800 26px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 70);
   ctx.fillStyle = yellow;
   ctx.font = '800 94px "Fraunces", Georgia, serif';
   ctx.fillText('BUILD', 54, 875);
   ctx.fillStyle = cream;
   ctx.font = '700 16px "Space Mono", monospace';
-  ctx.fillText('HACKERS HOUSE GOA 2026  /  BUILD IN PUBLIC', 57, 947);
+  ctx.fillText('BUILD IN PUBLIC  /  FRAME 03', 57, 947);
 
   ctx.strokeStyle = green;
   ctx.lineWidth = 10;
