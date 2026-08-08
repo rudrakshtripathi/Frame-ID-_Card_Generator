@@ -127,15 +127,15 @@ function makeSignalFrame(source: HTMLImageElement): string {
   // Event typography and footer ribbon.
   ctx.fillStyle = cream;
   ctx.textAlign = 'center';
-  ctx.font = '700 22px "Space Mono", monospace';
+  ctx.font = '700 19px "Space Mono", monospace';
   ctx.letterSpacing = '5px';
-  ctx.fillText('HACKERS HOUSE', 500, 57);
+  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 57);
   ctx.fillStyle = yellow;
   ctx.font = '800 93px "Fraunces", Georgia, serif';
   ctx.fillText('GOA', 500, 938);
   ctx.fillStyle = cream;
   ctx.font = '700 22px "Space Mono", monospace';
-  ctx.fillText('2026  /  BUILD IN PUBLIC', 500, 976);
+  ctx.fillText('BUILD IN PUBLIC', 500, 976);
   ctx.textAlign = 'left';
   ctx.fillStyle = pink;
   ctx.font = '700 17px "Space Mono", monospace';
@@ -239,12 +239,12 @@ function makePalmClubFrame(source: HTMLImageElement): string {
 
   ctx.fillStyle = yellow;
   ctx.textAlign = 'center';
-  ctx.font = '800 24px "Space Mono", monospace';
-  ctx.fillText('HACKERS HOUSE / GOA', 500, 96);
+  ctx.font = '800 20px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE GOA 2026', 500, 96);
   ctx.fillStyle = darkGreen;
   ctx.font = '800 88px "Fraunces", Georgia, serif';
   ctx.fillText('PALM CLUB', 500, 925);
-  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.font = '700 17px "Space Mono", monospace';
   ctx.fillText('SUN / SEA / SHIP IT', 500, 970);
 
   ctx.strokeStyle = pink;
@@ -298,8 +298,8 @@ function makeBuildBoldFrame(source: HTMLImageElement): string {
   ctx.font = '800 94px "Fraunces", Georgia, serif';
   ctx.fillText('BUILD', 54, 875);
   ctx.fillStyle = cream;
-  ctx.font = '700 18px "Space Mono", monospace';
-  ctx.fillText('IN PUBLIC  /  HACKERS HOUSE  /  2026', 57, 947);
+  ctx.font = '700 16px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE GOA 2026  /  BUILD IN PUBLIC', 57, 947);
 
   ctx.strokeStyle = green;
   ctx.lineWidth = 10;
