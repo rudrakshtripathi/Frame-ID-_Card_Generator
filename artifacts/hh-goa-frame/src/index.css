@@ -169,6 +169,96 @@
   font-size: .65rem;
   font-weight: 700;
 }
+.frame-picker {
+  border: 1px solid rgba(15, 68, 49, .12);
+  border-radius: 1.25rem;
+  background: rgba(255, 248, 220, .58);
+  padding: .9rem;
+}
+.frame-choice {
+  min-width: 0;
+  border: 1px solid rgba(15, 68, 49, .14);
+  border-radius: .85rem;
+  background: rgba(255, 248, 220, .68);
+  padding: .45rem;
+  text-align: left;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+.frame-choice:hover {
+  border-color: rgba(245, 47, 136, .55);
+  transform: translateY(-2px);
+}
+.frame-choice-selected {
+  border-color: hsl(var(--accent));
+  background: hsl(var(--secondary));
+  box-shadow: 0 0 0 2px hsl(var(--accent) / .15), 0 7px 16px rgba(15, 68, 49, .1);
+}
+.frame-swatch {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: .6rem;
+}
+.frame-swatch-photo {
+  position: absolute;
+  display: block;
+  background: linear-gradient(145deg, #d8b69a 0 44%, #39413d 45% 74%, #156f4b 75%);
+}
+.frame-swatch-label {
+  position: absolute;
+  display: block;
+  font-family: var(--app-font-serif);
+  font-size: clamp(.75rem, 2.5vw, 1.15rem);
+  font-weight: 800;
+  letter-spacing: -.08em;
+}
+.frame-swatch-signal {
+  background: #075c3c;
+  border: 2px solid #ffd32a;
+}
+.frame-swatch-signal .frame-swatch-photo {
+  inset: 19%;
+  border-radius: 999px;
+  border: 2px solid #f52f88;
+}
+.frame-swatch-signal .frame-swatch-label {
+  bottom: 7%;
+  left: 50%;
+  color: #ffd32a;
+  transform: translateX(-50%);
+}
+.frame-swatch-palm {
+  background: #fff8dc;
+  border-top: .8rem solid #075c3c;
+  border-bottom: .8rem solid #ffd32a;
+}
+.frame-swatch-palm .frame-swatch-photo {
+  inset: 18% 17%;
+  border-radius: 999px;
+  border: 2px solid #f52f88;
+}
+.frame-swatch-palm .frame-swatch-label {
+  bottom: 2%;
+  left: 50%;
+  color: #064b32;
+  transform: translateX(-50%);
+}
+.frame-swatch-bold {
+  background: #f52f88;
+  border-top: .8rem solid #ffd32a;
+  border-bottom: .8rem solid #064b32;
+}
+.frame-swatch-bold .frame-swatch-photo {
+  inset: 18% 12%;
+  border: 2px solid #ffd32a;
+  border-radius: .25rem;
+}
+.frame-swatch-bold .frame-swatch-label {
+  bottom: 1%;
+  left: 7%;
+  color: #ffd32a;
+}
 .checker {
   background-image: linear-gradient(45deg, rgba(15,68,49,.07) 25%, transparent 25%, transparent 75%, rgba(15,68,49,.07) 75%), linear-gradient(45deg, rgba(15,68,49,.07) 25%, transparent 25%, transparent 75%, rgba(15,68,49,.07) 75%);
   background-position: 0 0, 8px 8px;

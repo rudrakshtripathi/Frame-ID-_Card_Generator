@@ -7,12 +7,19 @@ import logoWordmark from '@assets/0_Screenshot_from_2026-08-08_01-15-18_17861319
 import NotFound from '@/pages/not-found';
 
 type AppState = 'idle' | 'processing' | 'ready' | 'error';
+type FrameId = 'signal' | 'palm-club' | 'build-bold';
+
+const FRAME_OPTIONS: Array<{ id: FrameId; name: string; eyebrow: string }> = [
+  { id: 'signal', name: 'Signal', eyebrow: 'Classic mark' },
+  { id: 'palm-club', name: 'Palm Club', eyebrow: 'Goa postcard' },
+  { id: 'build-bold', name: 'Build Bold', eyebrow: 'Loud edition' },
+];
 
 const queryClient = new QueryClient();
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'heic'];
 
-function makeFrame(source: HTMLImageElement): string {
+function makeSignalFrame(source: HTMLImageElement): string {
   const canvas = document.createElement('canvas');
   canvas.width = 1000;
   canvas.height = 1000;
@@ -153,6 +160,211 @@ function makeFrame(source: HTMLImageElement): string {
   return canvas.toDataURL('image/png');
 }
 
+function createFrameCanvas(): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1000;
+  canvas.height = 1000;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Your browser could not start the frame canvas.');
+  return { canvas, ctx };
+}
+
+function drawCroppedPhoto(
+  ctx: CanvasRenderingContext2D,
+  source: HTMLImageElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  const sourceRatio = source.naturalWidth / source.naturalHeight;
+  const targetRatio = width / height;
+  let sx = 0;
+  let sy = 0;
+  let cropWidth = source.naturalWidth;
+  let cropHeight = source.naturalHeight;
+  if (sourceRatio > targetRatio) {
+    cropWidth = source.naturalHeight * targetRatio;
+    sx = (source.naturalWidth - cropWidth) / 2;
+  } else {
+    cropHeight = source.naturalWidth / targetRatio;
+    sy = (source.naturalHeight - cropHeight) / 2;
+  }
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(source, sx, sy, cropWidth, cropHeight, x, y, width, height);
+  ctx.restore();
+}
+
+function makePalmClubFrame(source: HTMLImageElement): string {
+  const { canvas, ctx } = createFrameCanvas();
+  const green = '#075c3c';
+  const darkGreen = '#064b32';
+  const yellow = '#ffd32a';
+  const cream = '#fff8dc';
+  const pink = '#f52f88';
+
+  ctx.fillStyle = cream;
+  ctx.fillRect(0, 0, 1000, 1000);
+  ctx.fillStyle = green;
+  ctx.fillRect(0, 0, 1000, 160);
+  ctx.fillStyle = yellow;
+  ctx.fillRect(0, 840, 1000, 160);
+
+  ctx.fillStyle = green;
+  ctx.beginPath();
+  ctx.arc(500, 500, 361, 0, Math.PI * 2);
+  ctx.fill();
+  drawCroppedPhoto(ctx, source, 169, 169, 662, 662, 331);
+  ctx.strokeStyle = pink;
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.arc(500, 500, 374, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = darkGreen;
+  ctx.lineWidth = 4;
+  ctx.setLineDash([14, 14]);
+  ctx.beginPath();
+  ctx.arc(500, 500, 390, 0.2, Math.PI * 1.8);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = yellow;
+  ctx.textAlign = 'center';
+  ctx.font = '800 24px "Space Mono", monospace';
+  ctx.fillText('HACKERS HOUSE / GOA', 500, 96);
+  ctx.fillStyle = darkGreen;
+  ctx.font = '800 88px "Fraunces", Georgia, serif';
+  ctx.fillText('PALM CLUB', 500, 925);
+  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.fillText('SUN / SEA / SHIP IT', 500, 970);
+
+  ctx.strokeStyle = pink;
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(80, 78);
+  ctx.lineTo(135, 78);
+  ctx.moveTo(865, 78);
+  ctx.lineTo(920, 78);
+  ctx.stroke();
+  ctx.fillStyle = darkGreen;
+  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('FRAME / 02', 62, 888);
+  ctx.textAlign = 'right';
+  ctx.fillText('GOA / 2026', 938, 888);
+  return canvas.toDataURL('image/png');
+}
+
+function makeBuildBoldFrame(source: HTMLImageElement): string {
+  const { canvas, ctx } = createFrameCanvas();
+  const green = '#075c3c';
+  const darkGreen = '#064b32';
+  const yellow = '#ffd32a';
+  const cream = '#fff8dc';
+  const pink = '#f52f88';
+
+  ctx.fillStyle = pink;
+  ctx.fillRect(0, 0, 1000, 1000);
+  ctx.fillStyle = yellow;
+  ctx.fillRect(0, 0, 1000, 112);
+  ctx.fillStyle = darkGreen;
+  ctx.fillRect(0, 888, 1000, 112);
+
+  // A bold rectangular crop for a more poster-like profile mark.
+  ctx.fillStyle = green;
+  ctx.fillRect(112, 152, 776, 650);
+  drawCroppedPhoto(ctx, source, 142, 182, 716, 590, 36);
+  ctx.strokeStyle = yellow;
+  ctx.lineWidth = 14;
+  ctx.strokeRect(112, 152, 776, 650);
+
+  ctx.fillStyle = darkGreen;
+  ctx.textAlign = 'left';
+  ctx.font = '800 29px "Space Mono", monospace';
+  ctx.fillText('MAKE THINGS', 52, 72);
+  ctx.fillStyle = pink;
+  ctx.font = '800 28px "Space Mono", monospace';
+  ctx.fillText('GOA / 03', 790, 72);
+  ctx.fillStyle = yellow;
+  ctx.font = '800 94px "Fraunces", Georgia, serif';
+  ctx.fillText('BUILD', 54, 875);
+  ctx.fillStyle = cream;
+  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.fillText('IN PUBLIC  /  HACKERS HOUSE  /  2026', 57, 947);
+
+  ctx.strokeStyle = green;
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(64, 142);
+  ctx.lineTo(64, 118);
+  ctx.lineTo(88, 118);
+  ctx.moveTo(936, 822);
+  ctx.lineTo(936, 846);
+  ctx.lineTo(912, 846);
+  ctx.stroke();
+  return canvas.toDataURL('image/png');
+}
+
+function makeFrame(source: HTMLImageElement, frameId: FrameId): string {
+  if (frameId === 'palm-club') return makePalmClubFrame(source);
+  if (frameId === 'build-bold') return makeBuildBoldFrame(source);
+  return makeSignalFrame(source);
+}
+
+function FrameSwatch({ frameId }: { frameId: FrameId }) {
+  if (frameId === 'palm-club') {
+    return <span aria-hidden="true" className="frame-swatch frame-swatch-palm"><span className="frame-swatch-photo" /><span className="frame-swatch-label">PALM</span></span>;
+  }
+  if (frameId === 'build-bold') {
+    return <span aria-hidden="true" className="frame-swatch frame-swatch-bold"><span className="frame-swatch-photo" /><span className="frame-swatch-label">BUILD</span></span>;
+  }
+  return <span aria-hidden="true" className="frame-swatch frame-swatch-signal"><span className="frame-swatch-photo" /><span className="frame-swatch-label">GOA</span></span>;
+}
+
+function FramePicker({ selectedFrame, onSelect }: { selectedFrame: FrameId; onSelect: (frameId: FrameId) => void }) {
+  return (
+    <div className="frame-picker" aria-label="Choose a frame">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <span className="mono-label text-accent">Pick your signal</span>
+          <p className="mt-1 text-sm font-bold text-primary">Choose a frame style</p>
+        </div>
+        <span className="hidden font-mono text-[9px] font-bold uppercase tracking-[.14em] text-primary/45 sm:block">3 editions</span>
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2.5" role="radiogroup" aria-label="Frame styles">
+        {FRAME_OPTIONS.map((option) => {
+          const isSelected = selectedFrame === option.id;
+          return (
+            <button
+              key={option.id}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              aria-label={`${option.name} — ${option.eyebrow}`}
+              onClick={() => onSelect(option.id)}
+              className={`frame-choice ${isSelected ? 'frame-choice-selected' : ''}`}
+              data-testid={`button-frame-${option.id}`}
+            >
+              <FrameSwatch frameId={option.id} />
+              <span className="mt-2 block truncate text-left text-[10px] font-extrabold uppercase tracking-[.08em] text-primary">{option.name}</span>
+              <span className="mt-0.5 block truncate text-left font-mono text-[8px] uppercase tracking-[.08em] text-primary/45">{option.eyebrow}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function absolutePath(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
@@ -203,10 +415,12 @@ function Home() {
   const [state, setState] = useState<AppState>('idle');
   const [filePreview, setFilePreview] = useState('');
   const [frameData, setFrameData] = useState('');
+  const [selectedFrame, setSelectedFrame] = useState<FrameId>('signal');
   const [error, setError] = useState('');
   const [shareError, setShareError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef('');
+  const sourceImageRef = useRef<HTMLImageElement | null>(null);
   const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), staleTime: 60_000, retry: 1 } });
   const createShare = useCreateShare();
 
@@ -220,9 +434,22 @@ function Home() {
     setState('idle');
     setFilePreview('');
     setFrameData('');
+    sourceImageRef.current = null;
     setError('');
     setShareError('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
+  const selectFrame = useCallback((frameId: FrameId) => {
+    setSelectedFrame(frameId);
+    if (!sourceImageRef.current) return;
+    try {
+      setFrameData(makeFrame(sourceImageRef.current, frameId));
+      setError('');
+    } catch (compositionError) {
+      setState('error');
+      setError(compositionError instanceof Error ? compositionError.message : 'We could not draw that frame. Try another image.');
+    }
   }, []);
 
   const processFile = useCallback((file?: File) => {
@@ -247,7 +474,8 @@ function Home() {
     const image = new Image();
     image.onload = () => {
       try {
-        setFrameData(makeFrame(image));
+        sourceImageRef.current = image;
+        setFrameData(makeFrame(image, selectedFrame));
         setState('ready');
       } catch (compositionError) {
         setState('error');
@@ -261,7 +489,7 @@ function Home() {
         : 'We could not read that image. Try opening it in your photos app, exporting it, and uploading it again.');
     };
     image.src = objectUrl;
-  }, []);
+  }, [selectedFrame]);
 
   const handleShare = useCallback(() => {
     if (!frameData || createShare.isPending) return;
@@ -281,7 +509,7 @@ function Home() {
         }
         const shareUrl = absolutePath(share.sharePath);
         const caption = `Built in Goa. Wearing the Hackers House frame for 2026. #FrameInGoa`;
-        const intent = `https://x.com/intent/post?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
+        const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
         if (popup && !popup.closed) {
           popup.location.assign(intent);
         } else {
@@ -319,6 +547,7 @@ function Home() {
             <span className="mono-label text-accent">Your maker mark is ready</span>
             <h1 className="mt-3 font-serif text-4xl font-black leading-[.95] tracking-[-.06em] text-primary sm:text-5xl">You are in<br />the build.</h1>
             <p className="mt-5 max-w-sm text-sm leading-6 text-primary/70">Save your frame, make it your profile picture, or send it into the builder stream.</p>
+            <div className="mt-6"><FramePicker selectedFrame={selectedFrame} onSelect={selectFrame} /></div>
             <div className="mt-7 flex flex-col gap-3">
               <button onClick={download} data-testid="button-download-frame" className="flex h-14 items-center justify-center gap-3 rounded-xl bg-primary px-5 font-bold text-secondary shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"><Download className="h-5 w-5" /> Download PNG</button>
               <button onClick={handleShare} disabled={createShare.isPending} data-testid="button-share-x" className="flex h-14 items-center justify-center gap-3 rounded-xl border-2 border-primary bg-transparent px-5 font-bold text-primary transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-secondary disabled:cursor-wait disabled:opacity-65">
@@ -351,6 +580,7 @@ function Home() {
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/8 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.14em] text-accent"><Sparkles className="h-3.5 w-3.5" /> A tiny Goa ritual for builders</div>
           <h1 data-testid="text-hero-heading" className="max-w-2xl font-serif text-[clamp(3.7rem,12vw,7.7rem)] font-black leading-[.82] tracking-[-.08em] text-primary">Put your<br /><span className="text-accent">face</span> in Goa.</h1>
           <p className="mt-8 max-w-md text-base leading-7 text-primary/70 sm:text-lg">One photo. One unmistakable frame. A little proof that you were here building in public with Hackers House.</p>
+           <div className="mt-7 max-w-md"><FramePicker selectedFrame={selectedFrame} onSelect={selectFrame} /></div>
           <div className="mt-8">
             <input ref={fileInputRef} type="file" accept=".jpg,.jpeg,.png,.heic,image/jpeg,image/png,image/heic" className="sr-only" onChange={(event) => processFile(event.target.files?.[0])} data-testid="input-photo-upload" />
             <button onClick={() => fileInputRef.current?.click()} data-testid="button-upload-photo" className="group inline-flex h-14 items-center gap-3 rounded-xl bg-primary px-6 font-bold text-secondary shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg active:translate-y-0"><Upload className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" /> Choose your photo <span className="ml-1 text-secondary/55">/</span><span className="font-mono text-[9px] uppercase tracking-[.12em] text-secondary/70">JPG PNG HEIC</span></button>
