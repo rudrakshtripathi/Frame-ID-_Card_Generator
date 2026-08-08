@@ -372,6 +372,17 @@ function absolutePath(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
 
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [header, encoded] = dataUrl.split(',');
+  const mime = header.match(/data:([^;]+)/)?.[1] ?? 'image/png';
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return new File([bytes], filename, { type: mime });
+}
+
 function BrandHeader() {
   return (
     <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
@@ -497,14 +508,8 @@ function Home() {
   const handleShare = useCallback(() => {
     if (!frameData || createShare.isPending) return;
     setShareError('');
-    // Open synchronously from the tap so mobile browsers do not block the
-    // eventual X navigation after the share upload finishes.
-    const popup = window.open('about:blank', '_blank');
-    if (popup) {
-      popup.document.title = 'Preparing your HH Goa share…';
-    }
     createShare.mutate({ data: { imageData: frameData } }, {
-      onSuccess: (share) => {
+      onSuccess: async (share) => {
         try {
           window.localStorage.setItem(`hh-goa-share-${share.id}`, share.imagePath);
         } catch {
@@ -512,17 +517,36 @@ function Home() {
         }
         const shareUrl = absolutePath(share.sharePath);
         const caption = `Built in Goa. Wearing the Hackers House frame for 2026. #FrameInGoa`;
-        const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
-        if (popup && !popup.closed) {
-          popup.location.assign(intent);
-        } else {
-          // A popup blocker may reject the new tab. Navigating this tab still
-          // completes the share instead of failing silently.
-          window.location.assign(intent);
+
+        // Create the durable share first, then hand the actual generated PNG
+        // to the device share sheet. On mobile, the user can choose X there
+        // and X receives the image file rather than only a share-page URL.
+        const imageFile = dataUrlToFile(frameData, 'hh-goa-2026-frame.png');
+        if (typeof navigator.share === 'function') {
+          const shareData: ShareData = {
+            files: [imageFile],
+            text: caption,
+            title: 'HH Goa 2026 frame',
+          };
+          if (!navigator.canShare || navigator.canShare(shareData)) {
+            try {
+              await navigator.share(shareData);
+              return;
+            } catch (error) {
+              if (error instanceof DOMException && error.name === 'AbortError') {
+                return;
+              }
+            }
+          }
         }
+
+        // Desktop browsers without file sharing cannot attach a generated
+        // image to an X web intent. Open X only after the share was created,
+        // with the durable share page as the crawler-friendly fallback.
+        const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
+        window.location.assign(intent);
       },
       onError: () => {
-        popup?.close();
         setShareError('Sharing is taking a breather. Download your PNG below — you can try X again in a moment.');
       },
     });
