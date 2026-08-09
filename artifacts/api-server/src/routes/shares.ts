@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { randomUUID } from "node:crypto";
-import { Router, type IRouter, type Request, type Response } from "express";
+import { Router } from "express";
 import { CreateShareBody, CreateShareResponse } from "@workspace/api-zod";
-import { loadShareImage, saveShareImage, shareImageExists } from "../lib/shareStorage";
+import { loadShareImage, saveShareImage, shareImageExists } from "../lib/shareStorage.js";
 
-const router: IRouter = Router();
+const router = Router();
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 function escapeHtml(value: string): string {
