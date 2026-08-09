@@ -5,9 +5,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Route, Switch, useParams } from 'wouter';
 import logoWordmark from '@assets/0_Screenshot_from_2026-08-08_01-15-18_1786131926995.png';
 import NotFound from '@/pages/not-found';
+import { generateCaption } from '@/lib/captionGenerator';
+import type { FrameId } from '@/lib/types';
 
 type AppState = 'idle' | 'processing' | 'ready' | 'error';
-type FrameId = 'signal' | 'palm-club' | 'build-bold';
 
 const FRAME_OPTIONS: Array<{ id: FrameId; name: string; eyebrow: string }> = [
   { id: 'signal', name: 'Signal', eyebrow: 'Classic mark' },
@@ -516,7 +517,7 @@ function Home() {
           // Storage can be unavailable in private browsing; the share still works.
         }
         const shareUrl = absolutePath(share.sharePath);
-        const caption = `Built in Goa. Wearing the Hackers House frame for 2026. #FrameInGoa`;
+        const caption = generateCaption();
 
         // Create the durable share first, then hand the actual generated PNG
         // to the device share sheet. On mobile, the user can choose X there
@@ -541,16 +542,18 @@ function Home() {
         }
 
         // Desktop browsers without file sharing cannot attach a generated
-        // image to an X web intent. Open X only after the share was created,
-        // with the durable share page as the crawler-friendly fallback.
+        // image to an X web intent. Open X in a new tab so the user stays on the app.
         const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(shareUrl)}`;
-        window.location.assign(intent);
+        const opened = window.open(intent, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          window.location.assign(intent);
+        }
       },
       onError: () => {
         setShareError('Sharing is taking a breather. Download your PNG below — you can try X again in a moment.');
       },
     });
-  }, [createShare, frameData]);
+  }, [createShare, frameData, selectedFrame]);
 
   const download = useCallback(() => {
     if (!frameData) return;

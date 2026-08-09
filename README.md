@@ -39,17 +39,9 @@ A no-login, mobile-first tool that turns a user's photo into a branded Hackers H
 - Upload JPG, JPEG, PNG, or HEIC photos up to 25 MB.
 - Auto-fit the photo into an HH Goa 2026 event frame in the browser.
 - Download the generated PNG or share it to X with `#FrameInGoa`.
-- Visit a shared frame page with a “Make your frame” return path.
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Visit a shared frame page with a "Make your frame" return path.
 
 ## Gotchas
 
 - HEIC decode support varies by browser; unsupported HEIC files show a clear inline fallback message.
 - Share records are currently held in API process memory, so the share endpoint should move to persistent object storage before relying on shares across server restarts.
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
