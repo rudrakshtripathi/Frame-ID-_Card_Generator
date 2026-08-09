@@ -1,10 +1,10 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import path from "node:path";
 import fs from "node:fs";
 import pinoHttp from "pino-http";
-import router from "./routes";
-import { logger } from "./lib/logger";
+import router from "./routes/index.js";
+import { logger } from "./lib/logger.js";
 
 const app: Express = express();
 
@@ -12,20 +12,20 @@ app.use(
   pinoHttp({
     logger,
     serializers: {
-      req(req) {
+      req(req: any) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      res(res: any) {
         return {
           statusCode: res.statusCode,
         };
       },
     },
-  }),
+  }) as any,
 );
 app.use(cors());
 app.use(express.json({ limit: "15mb" }));
@@ -39,7 +39,7 @@ app.use("/", router);
 const staticPath = path.resolve(process.cwd(), "artifacts/hh-goa-frame/dist/public");
 if (fs.existsSync(staticPath)) {
   app.use(express.static(staticPath));
-  app.get("*", (req, res, next) => {
+  app.get("*", (req: Request, res: Response, next: NextFunction) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/s/")) {
       return next();
     }
