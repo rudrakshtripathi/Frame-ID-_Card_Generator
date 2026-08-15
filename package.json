@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.2.0",
   "scripts": {
     "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
-    "build": "pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/hh-goa-frame run build && node -e \"require('fs').mkdirSync('public', {recursive: true}); require('fs').cpSync('artifacts/hh-goa-frame/dist/public', 'public', {recursive: true})\"",
+    "build": "pnpm --filter @workspace/api-zod run build && pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/hh-goa-frame run build && node -e \"require('fs').mkdirSync('public', {recursive: true}); require('fs').cpSync('artifacts/hh-goa-frame/dist/public', 'public', {recursive: true})\"",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
