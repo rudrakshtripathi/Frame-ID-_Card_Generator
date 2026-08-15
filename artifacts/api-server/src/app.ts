@@ -40,7 +40,7 @@ app.use("/", router);
 const staticPath = path.resolve(process.cwd(), "artifacts/hh-goa-frame/dist/public");
 if (fs.existsSync(staticPath)) {
   app.use(express.static(staticPath));
-  app.get("*", (req, res, next) => {
+  app.get("/*splat", (req, res, next) => {
     if (req.path?.startsWith("/api") || req.path?.startsWith("/s/")) {
       return next();
     }
