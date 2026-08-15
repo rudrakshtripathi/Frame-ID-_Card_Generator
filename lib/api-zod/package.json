@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && node -e \"const fs=require('fs'),path=require('path');function fix(dir){fs.readdirSync(dir,{withFileTypes:true}).forEach(f=>{const p=path.join(dir,f.name);if(f.isDirectory())fix(p);else if(f.name.endsWith('.js')){let c=fs.readFileSync(p,'utf8');c=c.replace(/(from\\s+['\\\"](\\.{1,2}\\/[^'\\\"]+?))(['\\\"])/g,(m,p1,p2,p3)=>p2.endsWith('.js')||p2.endsWith('.json')?m:p1+'.js'+p3);fs.writeFileSync(p,c,'utf8');}});}fix('dist');\""
   },
   "exports": {
     ".": {
