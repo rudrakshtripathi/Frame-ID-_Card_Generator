@@ -16,7 +16,9 @@ if (supabaseUrl && supabaseServiceKey) {
 }
 
 const BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "hh-goa-shares";
-const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), ".data", "shares");
+const LOCAL_STORAGE_DIR = process.env.VERCEL 
+  ? path.resolve("/tmp", ".data", "shares") 
+  : path.resolve(process.cwd(), ".data", "shares");
 
 async function ensureLocalDir() {
   await fs.mkdir(LOCAL_STORAGE_DIR, { recursive: true });
